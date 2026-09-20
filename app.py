@@ -1,4 +1,5 @@
 """Step 8: Streamlit UI.  Run with:  streamlit run app.py"""
+import os
 import tempfile
 from pathlib import Path
 
@@ -10,6 +11,15 @@ from src.rag import answer_question
 from src.vectorstore import VectorStore
 
 load_dotenv()
+
+# On Streamlit Cloud, copy secrets into environment variables so os.getenv() finds them
+try:
+    for _k, _v in st.secrets.items():
+        if isinstance(_v, str):
+            os.environ.setdefault(_k, _v)
+except Exception:
+    pass  # no secrets file locally, which is fine (.env is used instead)
+
 st.set_page_config(page_title="Research Paper Assistant", page_icon="📄", layout="wide")
 st.title("📄 Research Paper Assistant")
 st.caption("Upload papers, ask questions, get answers with the paper name and page.")
