@@ -1,0 +1,27 @@
+   name: CI
+
+   on:
+     push:
+       branches: [main, master]
+     pull_request:
+
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       steps:
+         - name: Get the code
+           uses: actions/checkout@v4
+
+         - name: Set up Python
+           uses: actions/setup-python@v5
+           with:
+             python-version: "3.11"
+
+         - name: Install dependencies
+           run: pip install -r requirements.txt flake8
+
+         - name: Check code for serious errors
+           run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+         - name: Build Docker image
+           run: docker build -t research-paper-assistant .
